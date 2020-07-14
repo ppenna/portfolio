@@ -22,14 +22,47 @@
  * SOFTWARE.
  */
 
-package config
+package drive
 
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	DownloadsPath  = assetsPath + "downloads/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
-)
+// Directory
+type RemoteDirectory struct {
+	id   string
+	name string
+	conn *RemoteConnection
+}
+
+func GetRoot(conn *RemoteConnection) (*RemoteDirectory, error) {
+	dir := &RemoteDirectory{
+		name: "/",
+		conn: conn,
+	}
+
+	return dir, nil
+}
+
+// Retrieve all files in a remote directory.
+func (dir *RemoteDirectory) RetrieveFiles(remoteDir string) ([]*RemoteFile, error) {
+
+	r, err := dir.conn.srv.Files.List().
+		Fields("files(id, name)").Q(remoteDir + " in parents").Do()
+	if err != nil {
+		return nil, err
+	}
+
+	// Empty directory.
+	if len(r.Files) == 0 {
+		return nil, nil
+	}
+
+	remoteFiles := make([]*RemoteFile, 0)
+	for _, i := range r.Files {
+		f := &RemoteFile{
+			id:   i.Id,
+			name: i.Name,
+			conn: dir.conn,
+		}
+		remoteFiles = append(remoteFiles, f)
+	}
+
+	return remoteFiles, nil
+}

@@ -21,15 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package drive
 
-package config
-
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	DownloadsPath  = assetsPath + "downloads/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
+import (
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/drive/v3"
+	"io/ioutil"
 )
+
+const credentialsFile = "credentials.json"
+
+type RemoteConnection struct {
+	srv *drive.Service
+}
+
+func NewConnection() (*RemoteConnection, error) {
+
+	b, err := ioutil.ReadFile(credentialsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := google.ConfigFromJSON(b, drive.DriveReadonlyScope)
+	if err != nil {
+		return nil, err
+	}
+	client := getClient(config)
+
+	srv, err := drive.New(client)
+	if err != nil {
+		return nil, err
+	}
+
+	return &RemoteConnection{srv}, err
+}

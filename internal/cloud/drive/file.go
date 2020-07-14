@@ -22,14 +22,38 @@
  * SOFTWARE.
  */
 
-package config
+package drive
 
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	DownloadsPath  = assetsPath + "downloads/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
+import (
+	"fmt"
+	"io"
+	"os"
+	"portfolio/internal/config"
 )
+
+type RemoteFile struct {
+	id   string
+	name string
+	conn *RemoteConnection
+}
+
+// Downloads a remote file.
+func (f *RemoteFile) Download() error {
+	var out *os.File
+
+	response, err := f.conn.srv.Files.Export(f.id, "text/csv").Download()
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	fmt.Printf("Downloading %s...\n", f.name)
+	out, err = os.Create(config.DownloadsPath + f.name + ".csv")
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	io.Copy(out, response.Body)
+
+	return nil
+}

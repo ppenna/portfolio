@@ -22,14 +22,34 @@
  * SOFTWARE.
  */
 
-package config
+package main
 
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	DownloadsPath  = assetsPath + "downloads/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
+import (
+	"portfolio/internal/cloud/drive"
 )
+
+func main() {
+	var err error
+	var root *drive.RemoteDirectory
+	var conn *drive.RemoteConnection
+
+	parseArgs()
+
+	rdir := "'" + remoteDir + "'"
+	conn, err = drive.NewConnection()
+	if err != nil {
+		panic("failed to connect to google drive")
+	}
+
+	root, err = drive.GetRoot(conn)
+	if err != nil {
+		panic("failed to get root node of google drive")
+	}
+
+	// Download remote files
+	if files, err := root.RetrieveFiles(rdir); err == nil {
+		for _, f := range files {
+			f.Download()
+		}
+	}
+}

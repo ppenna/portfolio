@@ -22,43 +22,21 @@
 # SOFTWARE.
 #
 
-EXEC ?= assistant.unix
-OPTIONS ?= --print
-.DEFAULT_GOAL := all
-
 #===============================================================================
-# Directories 
+# Binaries
 #===============================================================================
 
-export CURRDIR := $(PWD)
-export CMDDIR  := $(CURRDIR)/cmd
-export BINDIR  := $(CURRDIR)/bin
-export MAKEDIR := $(CURRDIR)/scripts/make
+export DOWNLOADER_EXEC := downloader.unix
 
 #===============================================================================
-# Toolchain Configuration
+# Portfolio Assistant
 #===============================================================================
 
-export GOCMD := go
-export GOBUILD := $(GOCMD) build
+# Builds binary.
+downloader-all:
+	@echo "[GO] $(DOWNLOADER_EXEC)"
+	@$(GOBUILD) -o $(BINDIR)/$(DOWNLOADER_EXEC) $(CMDDIR)/downloader/*.go
 
-#===============================================================================
-# Makefiles
-#===============================================================================
-
-include $(MAKEDIR)/assistant.mk
-include $(MAKEDIR)/explorer.mk
-include $(MAKEDIR)/downloader.mk
-
-#===============================================================================
-
-# Builds all binaries.
-all: assistant-all explorer-all downloader-all
-
-
-# Runs default binary
-run: all
-	$(BINDIR)/$(EXEC) $(OPTIONS)
-
-# Cleans all compilation files.
-clean: assistant-clean explorer-clean downloader-clean
+# Cleans compilation files.
+downloader-clean:
+	@rm -rf  $(BINDIR)/$(DOWNLOADER_EXEC)

@@ -22,14 +22,22 @@
  * SOFTWARE.
  */
 
-package config
+package main
 
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	DownloadsPath  = assetsPath + "downloads/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
+import (
+	"flag"
 )
+
+// Command Line Arguments
+var (
+	remoteDir string // Remote directory
+)
+
+// Parses command line arguments.
+func parseArgs() {
+
+	remoteDirHelp := "Address of remote directory"
+	flag.StringVar(&remoteDir, "remote", "13eKwCrPx7D9xN45UzhWd4jnZODvj5LYK", remoteDirHelp)
+
+	flag.Parse()
+}
