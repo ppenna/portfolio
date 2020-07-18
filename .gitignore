@@ -1,0 +1,16 @@
+# Binaries
+bin/
+*.test
+*.exe
+*.exe~
+
+# Libraries
+vendor/
+pkg/
+*.dll
+*.so
+*.dylib
+
+# IDEs
+*.swp
+*.swo
