@@ -22,42 +22,21 @@
 # SOFTWARE.
 #
 
-EXEC ?= assistant.unix
-OPTIONS ?= --print
-.DEFAULT_GOAL := all
-
 #===============================================================================
-# Directories 
+# Binaries
 #===============================================================================
 
-export CURRDIR := $(PWD)
-export CMDDIR  := $(CURRDIR)/cmd
-export BINDIR  := $(CURRDIR)/bin
-export MAKEDIR := $(CURRDIR)/scripts/make
+export EXPLORER_EXEC := explorer.unix
 
 #===============================================================================
-# Toolchain Configuration
+# Portfolio Assistant
 #===============================================================================
 
-export GOCMD := go
-export GOBUILD := $(GOCMD) build
+# Builds binary.
+explorer-all:
+	@echo "[GO] $(EXPLORER_EXEC)"
+	@$(GOBUILD) -o $(BINDIR)/$(EXPLORER_EXEC) $(CMDDIR)/explorer/*.go
 
-#===============================================================================
-# Makefiles
-#===============================================================================
-
-include $(MAKEDIR)/assistant.mk
-include $(MAKEDIR)/explorer.mk
-
-#===============================================================================
-
-# Builds all binaries.
-all: assistant-all explorer-all
-
-
-# Runs default binary
-run: all
-	$(BINDIR)/$(EXEC) $(OPTIONS)
-
-# Cleans all compilation files.
-clean: assistant-clean explorer-clean
+# Cleans compilation files.
+explorer-clean:
+	@rm -rf  $(BINDIR)/$(EXPLORER_EXEC)
