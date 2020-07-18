@@ -22,13 +22,34 @@
  * SOFTWARE.
  */
 
-package config
+package main
 
-const (
-	assetsPath     = "assets/"
-	scriptsPath    = "scripts/"
-	DataPath       = assetsPath + "data/"
-	WalletsPath    = assetsPath + "wallets/"
-	WatchlistsPath = assetsPath + "watchlists/"
-	RplotsPath     = scriptsPath + "r/"
+import (
+	"flag"
 )
+
+// Command Line Arguments
+var (
+	printAll   bool   // Print information on all assets?
+	list       bool   // List known assets?
+	ticker     string // Name of the target asset.
+	plotCharts bool   // Plot charts?
+)
+
+// Parses command line arguments.
+func parseArgs() {
+
+	allHelp := "Print information on all assets?"
+	flag.BoolVar(&printAll, "all", false, allHelp)
+
+	listHelp := "List all known assets?"
+	flag.BoolVar(&list, "list", false, listHelp)
+
+	plotChartsHelp := "Plot charts?"
+	flag.BoolVar(&plotCharts, "plot", true, plotChartsHelp)
+
+	tickerHelp := "Print information on asset."
+	flag.StringVar(&ticker, "asset", "kncr11", tickerHelp)
+
+	flag.Parse()
+}

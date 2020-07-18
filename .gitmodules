@@ -1,0 +1,3 @@
+[submodule "scripts/r/rplots"]
+	path = scripts/r/rplots
+	url = https://github.com/ppenna/rplots.git
